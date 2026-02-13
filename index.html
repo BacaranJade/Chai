@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chai de Fleur | Flower Shop</title>
+
+<style>
+:root{
+--primary:#5b1e2d;
+--accent:#c9a227;
+--bg:#fdf8f6;
+--accent-hover:#e0b02b;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Georgia, serif;}
+body{background:var(--bg);overflow-x:hidden;transition:0.3s;}
+.hidden{display:none;}
+
+/* LANDING */
+#landing{
+height:100vh;
+background:var(--primary);
+color:white;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-align:center;
+position:fixed;width:100%;top:0;left:0;z-index:2000;
+transition:opacity .6s ease, transform .6s ease;
+}
+#landing img{width:250px;margin-bottom:20px; border-radius: 20px;}
+#landing button{
+padding:12px 25px;background:var(--accent);border:none;color:white;border-radius:20px;
+cursor:pointer;font-weight:bold;transition:0.3s;
+}
+#landing button:hover{background:var(--accent-hover);transform:scale(1.05);}
+.fade-out{opacity:0;transform:scale(1.05);}
+.fade-in{animation:fadeInShop 0.8s ease forwards;}
+@keyframes fadeInShop{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* STICKY NAV */
+nav{
+background:var(--primary);padding:15px;display:flex;justify-content:space-between;align-items:center;
+color:white;position:sticky;top:0;z-index:1000;
+}
+nav button{background:#c9a227;padding:6px 10px;border:none;border-radius:5px;cursor:pointer;}
+
+/* HERO */
+.hero{background:var(--primary);color:white;padding:60px 20px;text-align:center;}
+
+/* SHOP */
+.container{width:90%;max-width:1200px;margin:30px auto;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
+.card{background:white;padding:15px;border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);text-align:center;transition:0.3s;animation:fadeIn 0.6s ease-in;}
+.card:hover{transform:scale(1.03);}
+.card img{width:100%;height:200px;object-fit:cover;border-radius:10px;}
+.buy-btn{background:var(--accent);color:white;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;transition:0.3s;position:relative;overflow:hidden;}
+.buy-btn:hover{background:var(--accent-hover);transform:scale(1.05);}
+
+/* POP ANIMATION */
+.pop{
+position:absolute;
+color:var(--accent);
+font-weight:bold;
+animation:pop 0.8s ease forwards;
+pointer-events:none;
+}
+@keyframes pop{
+0%{transform:translateY(0);opacity:1;}
+50%{transform:translateY(-20px);opacity:0.8;}
+100%{transform:translateY(-40px);opacity:0;}
+}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* FOOTER */
+footer{background:var(--primary);color:white;text-align:center;padding:20px;margin-top:40px;}
+</style>
+</head>
+
+<body>
+
+<!-- LANDING -->
+<div id="landing">
+<img src="logo.jpg" alt="Logo">
+<h1>Chai de Fleur</h1>
+<p>Bouquets & Gifts for Every Kind of Love 💐</p>
+<br>
+<button onclick="enterShop()">Explore Shop</button>
+</div>
+
+<!-- MAIN SHOP -->
+<div id="mainContent" class="hidden">
+<nav>
+<h2>Chai de Fleur</h2>
+<button onclick="backToLanding()">Home</button>
+</nav>
+
+<div class="hero">
+<h1>Bouquets & Gifts</h1>
+<p>For Every Kind of Love 💐</p>
+</div>
+
+<div class="container">
+<h2>Our Bouquets</h2>
+<div class="grid" id="products"></div>
+</div>
+
+<footer>© 2026 Chai de Fleur</footer>
+</div>
+
+<script>
+// 🌸 Facebook Page Profile Link
+const messengerLink = "https://www.facebook.com/share/16tPbhZDCc/";
+
+// Product List
+const products=[
+{id:1,name:"Larged Sized Boquet",price:700,img:"large sized boquets.jpg"},
+{id:2,name:"Medium sized bouquet",price:450,img:"medium sized bouquet.jpg"},
+{id:3,name:"Mini",price:40,img:"mini.jpg"},
+{id:4,name:"Promise",price:250,img:"promise.jpg"},
+{id:5,name:"Mini Lily",price:120,img:"mini lily.jpg"},
+];
+
+// Enter Shop
+function enterShop(){
+const landing=document.getElementById("landing");
+landing.classList.add("fade-out");
+setTimeout(()=>{
+landing.remove();
+const main=document.getElementById("mainContent");
+main.style.display="block";
+main.classList.add("fade-in");
+window.scrollTo(0,0);
+},600);
+}
+
+// Back to Landing
+function backToLanding(){
+document.getElementById("mainContent").classList.remove("fade-in");
+document.getElementById("mainContent").style.display="none";
+document.body.insertAdjacentHTML("afterbegin",`<div id="landing">
+<img src="logo.jpg" alt="Logo">
+<h1>Chai de Fleur</h1>
+<p>Bouquets & Gifts for Every Kind of Love 💐</p><br>
+<button onclick="enterShop()">Explore Shop</button>
+</div>`);
+}
+
+// Render Products with pop animation
+function renderProducts(){
+const container=document.getElementById("products");
+container.innerHTML="";
+products.forEach((p)=>{
+container.innerHTML+=`
+<div class="card">
+<img src="${p.img}">
+<h3>${p.name}</h3>
+<p>₱${p.price}</p>
+<button class="buy-btn" onclick="openPage(this)">Message Seller</button>
+</div>`;
+});
+}
+
+// Button click opens page + pop effect
+function openPage(btn){
+const pop=document.createElement("div");
+pop.className="pop";
+pop.innerText="✿";
+btn.appendChild(pop);
+setTimeout(()=>pop.remove(),800);
+window.open(messengerLink,'_blank');
+}
+
+renderProducts();
+</script>
+
+</body>
+</html>
